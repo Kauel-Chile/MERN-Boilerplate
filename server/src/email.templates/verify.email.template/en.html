@@ -1,0 +1,69 @@
+<div
+    style="
+        max-width: 700px;
+        background-color: white;
+        padding: 3rem;
+        margin: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+            Droid Sans, Helvetica Neue, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        border-radius: 0.25rem;
+    "
+>
+    <div>
+        <img
+            style="
+                width: 50%;
+                min-width: 250px;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                margin-bottom: 30px;
+            "
+            src="cid:logo"
+            alt="Logo"
+        />
+    </div>
+    <div style="background-color: white; border-radius: 12px; padding: 3rem; margin-top: 2rem">
+        <h2 style="text-align: center">Email verification</h2>
+        <h3>{{fullName}}</h3>
+        <br />
+        <br />
+        <p>
+            You recently registered on <a href="{{platformURL}}">{{platformName}}</a>. To complete your registration,
+            you need to confirm that this is your email address. To do so, click on the button below.
+        </p>
+        <br />
+        <br />
+        <div style="text-align: center">
+            <a href="{{verifyLink}}" target="_blank">
+                <button
+                    style="
+                        background-color: #3383ee;
+                        color: white;
+                        font-weight: bold;
+                        padding: 15px 30px;
+                        outline: none;
+                        border: none;
+                        border-radius: 30px;
+                        text-transform: uppercase;
+                    "
+                >
+                    Verify email address
+                </button>
+            </a>
+            <br />
+            <br />
+            <p style="margin-top: 20px">
+                If you did not initiate this process, you can ignore this email. For security reasons, the link to reset
+                password will expire 1 hour after it was generated.
+            </p>
+            <small>
+                <p style="color: darkgray">If you can't click on the button, copy and paste the URL in your browser.</p>
+                <a href="{{verifyLink}}" target="_blank">{{verifyLink}}</a>
+            </small>
+        </div>
+    </div>
+</div>

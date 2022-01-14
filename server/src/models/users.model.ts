@@ -18,19 +18,30 @@ const userSchema: Schema = new Schema(
         },
         password: {
             type: String,
-            required: true
+            required: false
+        },
+        emailVerifiedAt: {
+            type: Date,
+            default: null,
+            required: false
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        toObject: {
+            virtuals: true
+        },
+        toJSON: {
+            virtuals: true
+        }
     }
 )
 
 userSchema.virtual('fullName').get(function () {
-    if (this.lastname) {
-        return `${this.firstname} ${this.lastname}`
+    if (this.lastName) {
+        return `${this.firstName} ${this.lastName}`
     }
-    return this.firstname
+    return this.firstName
 })
 
 userSchema.virtual('name').get(function () {

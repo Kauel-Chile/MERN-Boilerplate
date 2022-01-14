@@ -1,3 +1,6 @@
+import { url } from '@configs/env'
+import { join } from 'path'
+
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -16,4 +19,26 @@ export const isEmpty = (value: string | number | object): boolean => {
     } else {
         return false
     }
+}
+
+/**
+ * @method asset
+ * @param {String} path - The path of the asset
+ * @returns {String} url - The URL of the asset
+ * @description Returns a URL for the given path
+ */
+export const asset = (path: string): string => {
+    const cleanUrl = url.replace(/\/$/, '')
+    const cleanPath = path.replace(/^\//, '')
+    return `${cleanUrl}/${cleanPath}`
+}
+
+/**
+ * @method frontendAsset
+ * @param {String} path - The path of the asset
+ * @returns {String} path - The output path of the asset
+ */
+export const frontendAsset = (path: string): string => {
+    const cleanPath = path.replace(/^\//, '')
+    return join(__dirname, '../../../client/public', cleanPath)
 }

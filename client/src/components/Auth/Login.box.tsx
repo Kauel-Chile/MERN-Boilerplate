@@ -15,7 +15,7 @@ export default function LoginBox() {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         axios
-            .post('/login', inputs)
+            .post('/api/auth/login', inputs)
             .then(res => {
                 console.log(res)
             })

@@ -1,3 +1,5 @@
+process.env['SUPPRESS_NO_CONFIG_WARNING'] = 'true'
+
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -56,7 +58,9 @@ class App {
     }
 
     private initializeMiddlewares() {
-        this.app.use(morgan(config.log.format, { stream }))
+        if (this.env === 'dev') {
+            this.app.use(morgan(config.log.format, { stream }))
+        }
         this.app.use(cors({ origin: config.cors.origin, credentials: config.cors.credentials }))
         this.app.use(hpp())
         this.app.use(helmet())

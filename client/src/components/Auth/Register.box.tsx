@@ -47,7 +47,7 @@ export default function RegisterBox() {
         const { confirmPassword, ...values } = inputs
         event.preventDefault()
         axios
-            .post('/signup', values)
+            .post('/api/auth/signup', values)
             .then(res => {
                 if (res.status === 200) window.location.href = '/'
             })

@@ -4,15 +4,22 @@ import { HttpException } from '@exceptions/HttpException'
 import { DataStoredInToken, TokenData } from '@interfaces/auth.interface'
 import { User } from '@interfaces/users.interface'
 import userModel from '@models/users.model'
-import { isEmpty } from '@utils/util'
+import { asset, frontendAsset, isEmpty } from '@utils/util'
 import bcrypt from 'bcrypt'
 import { __ } from 'i18n'
 import jwt from 'jsonwebtoken'
+import { sendHTMLEmail } from './email.service'
+import { logger } from '@/utils/logger'
+import { generateHTML } from '@/utils/html'
+import path from 'path'
 
 class AuthService {
     public users = userModel
 
-    public async signup(userData: CreateUserDto, locale: string = env.locale): Promise<User> {
+    public async signup(
+        userData: CreateUserDto,
+        locale: string = env.locale
+    ): Promise<{ cookie: string; createdUser: User }> {
         if (isEmpty(userData)) throw new HttpException(400, __({ phrase: 'Credentials are required', locale }))
 
         const findUser: User = await this.users.findOne({ email: userData.email })
@@ -25,7 +32,25 @@ class AuthService {
         const hashedPassword = await bcrypt.hash(userData.password, 10)
         const createUserData: User = await this.users.create({ ...userData, password: hashedPassword })
 
-        return createUserData
+        const loginToken = this.createToken(createUserData)
+        const cookie = this.createCookie(loginToken)
+
+        const verificationToken = this.createToken(createUserData, 0)
+        const args = {
+            fullName: createUserData.fullName,
+            email: createUserData.email,
+            verifyLink: asset(`/verify?token=${verificationToken.token}`),
+            platformURL: env.url,
+            platformName: env.platformName
+        }
+        sendHTMLEmail(
+            createUserData.email,
+            __({ phrase: 'Verify your email', locale }),
+            generateHTML(path.join(__dirname + `/../email.templates/verify.email.template/${locale}.html`), args),
+            { attachments: [{ filename: 'logo.png', path: frontendAsset('images/logo.png'), cid: 'logo' }] }
+        ).catch(err => logger.error(__({ phrase: err.message, locale })))
+
+        return { cookie, createdUser: createUserData }
     }
 
     public async login(
@@ -57,12 +82,30 @@ class AuthService {
         return findUser
     }
 
-    public createToken(user: User): TokenData {
+    public async verifyUserEmail(userId: string, locale: string = env.locale): Promise<User> {
+        if (isEmpty(userId)) throw new HttpException(400, __({ phrase: 'An ID is required', locale }))
+
+        let findUser = await this.users.findOne({ _id: userId })
+        if (!findUser) throw new HttpException(409, __({ phrase: 'User not found', locale }))
+
+        findUser.emailVerifiedAt = new Date()
+        findUser = await findUser.save()
+        if (!findUser) throw new HttpException(409, __({ phrase: 'Unable to update user', locale }))
+
+        return findUser
+    }
+
+    public createToken(user: User, expiresIn: number = 3600): TokenData {
         const dataStoredInToken: DataStoredInToken = { _id: user._id }
         const secretKey: string = keys.secretKey
-        const expiresIn: number = 60 * 60
 
         return { expiresIn, token: jwt.sign(dataStoredInToken, secretKey, { expiresIn }) }
+    }
+
+    public verifyToken(token: string, ignoreExpiration: boolean = false): DataStoredInToken {
+        const secretKey: string = keys.secretKey
+
+        return jwt.verify(token, secretKey, { ignoreExpiration }) as DataStoredInToken
     }
 
     public createCookie(tokenData: TokenData): string {

@@ -3,7 +3,14 @@
     "Credentials are required": "Se requieren credenciales",
     "Email {{email}} already exists": "El email {{email}} ya existe",
     "Email {{email}} not found": "Email {{email}} no encontrado",
+    "Error sending email": "Error enviando email",
+    "Error sending verification email": "Error enviando email de verificación",
+    "SMTP credentials are required": "Se requieren credenciales SMTP",
+    "SMTP config not set": "Configuración SMTP no establecida",
+    "Unable to update user": "No se puede actualizar el usuario",
     "User data is required": "Se requieren datos de usuario",
     "User not found": "Ususario no encontrado",
+    "Verify your email": "Verifica tu email",
+    "Verify": "Verificar",
     "Wrong password": "Contraseña incorrecta"
 }

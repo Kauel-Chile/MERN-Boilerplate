@@ -12,11 +12,10 @@ class AuthController {
         try {
             const userData: CreateUserDto = req.body
             const userLocale = req.cookies.Language || locale
-            const signUpUserData: User = await this.authService.signup(userData, userLocale)
-            const { cookie, findUser } = await this.authService.login(userData, userLocale)
+            const { cookie, createdUser } = await this.authService.signup(userData, userLocale)
 
             res.setHeader('Set-Cookie', [cookie])
-            res.status(201).json({ data: signUpUserData, message: 'signup' })
+            res.status(201).json({ data: createdUser, message: 'signup' })
         } catch (error) {
             next(error)
         }
@@ -43,6 +42,19 @@ class AuthController {
 
             res.setHeader('Set-Cookie', ['Authorization=; Max-age=0'])
             res.status(200).json({ data: logOutUserData, message: 'logout' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public verifyUserEmail = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const token: string = req.query?.token.toString()
+            const userId: string = this.authService.verifyToken(token, true)._id
+            const userLocale: string = req.cookies.Language || locale
+            const verifyUserData: User = await this.authService.verifyUserEmail(userId, userLocale)
+
+            res.status(200).json({ data: verifyUserData, message: 'verified' })
         } catch (error) {
             next(error)
         }
