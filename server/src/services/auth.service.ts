@@ -95,6 +95,58 @@ class AuthService {
         return findUser
     }
 
+    /**
+     * Initiates reset password process for a given email
+     * @param {*} email Email for which to initiate the reset password process
+     * @returns Object, data to generate email to send (reset token, fullname, email)
+     */
+    public async forgotPassword(email: string, locale: string = env.locale): Promise<User> {
+        const findUser: User = await this.users.findOneAndUpdate(
+            { email },
+            { updatedAt: new Date() },
+            { new: true, timestamps: false }
+        )
+        if (isEmpty(findUser))
+            throw new HttpException(409, __({ phrase: 'Email {{email}} not found', locale }, { email }))
+        const resetToken = this.createToken(findUser)
+        const args = {
+            fullName: findUser.fullName,
+            resetLink: asset(`/reset-password?token=${resetToken.token}`)
+        }
+        await sendHTMLEmail(
+            findUser.email,
+            __({ phrase: 'Reset your password', locale }),
+            generateHTML(path.join(__dirname + `/../email.templates/reset.password.template/${locale}.html`), args),
+            { attachments: [{ filename: 'logo.png', path: frontendAsset('images/logo.png'), cid: 'logo' }] }
+        ).catch(err => logger.error(__({ phrase: err.message, locale })))
+
+        return findUser
+    }
+
+    /**
+     * Resets password for a given token
+     * @param {string} token Token to reset password
+     * @param {string} password New password
+     * @returns {User} data of the updated user
+     */
+    public async resetPassword(token: string, password: string, locale: string = env.locale): Promise<User> {
+        if (isEmpty(token)) throw new HttpException(400, __({ phrase: 'Token is required', locale }))
+        if (isEmpty(password)) throw new HttpException(400, __({ phrase: 'Password is required', locale }))
+
+        const tokenData: DataStoredInToken = this.verifyToken(token)
+        if (!tokenData) throw new HttpException(409, __({ phrase: 'Invalid token', locale }))
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const findUser: User = await this.users.findOneAndUpdate(
+            { _id: tokenData._id },
+            { password: hashedPassword },
+            { new: true }
+        )
+        if (!findUser) throw new HttpException(409, __({ phrase: 'User not found', locale }))
+        return findUser
+    }
+
     public createToken(user: User, expiresIn: number = 3600): TokenData {
         const dataStoredInToken: DataStoredInToken = { _id: user._id }
         const secretKey: string = keys.secretKey

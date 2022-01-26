@@ -3,7 +3,6 @@ import { CreateUserDto } from '@dtos/users.dto'
 import { User } from '@interfaces/users.interface'
 import userService from '@services/users.service'
 import { NextFunction, Request, Response } from 'express'
-import AuthService from '@/services/auth.service'
 
 class UsersController {
     public userService = new userService()
@@ -34,7 +33,7 @@ class UsersController {
         try {
             const userData: CreateUserDto = req.body
             const userLocale = req.cookies.Language || locale
-            const createUserData: User = await this.userService.createUser(userData, locale)
+            const createUserData: User = await this.userService.createUser(userData, userLocale)
 
             res.status(201).json({ data: createUserData, message: 'created' })
         } catch (error) {

@@ -15,6 +15,8 @@ export default function App() {
                     <Route path="/login" element={<Auth.LoginPage />} />
                     <Route path="/register" element={<Auth.RegisterPage />} />
                     <Route path="/forgot-password" element={<Auth.ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<Auth.ResetPasswordPage />} />
+                    <Route path="/verify" element={<Auth.VerifyEmailPage />} />
                     <Route path="*" element={<Miscelaneous.NotFoundPage />} />
                 </Routes>
             </main>

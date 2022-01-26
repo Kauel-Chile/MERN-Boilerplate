@@ -22,7 +22,7 @@
                 display: block;
                 margin-bottom: 30px;
             "
-            src="/images/logo512.png"
+            src="cid:logo"
             alt="Logo"
         />
     </div>
@@ -54,6 +54,10 @@
                 If you did not initiate this process, you can ignore this email. For security reasons the password reset
                 link will expire 1 hour after being generated.
             </p>
+            <small>
+                <p style="color: darkgray">If you can't click the button, copy and paste the URL into your browser.</p>
+                <a href="{{resetLink}}" target="_blank">{{resetLink}}</a>
+            </small>
         </div>
     </div>
 </div>

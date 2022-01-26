@@ -49,12 +49,37 @@ class AuthController {
 
     public verifyUserEmail = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const token: string = req.query?.token.toString()
+            const token: string = req.body?.token.toString()
             const userId: string = this.authService.verifyToken(token, true)._id
             const userLocale: string = req.cookies.Language || locale
             const verifyUserData: User = await this.authService.verifyUserEmail(userId, userLocale)
 
             res.status(200).json({ data: verifyUserData, message: 'verified' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const email: string = req.body?.email?.toString()
+            const userLocale: string = req.cookies.Language || locale
+            const resetUserPassword: User = await this.authService.forgotPassword(email, userLocale)
+
+            res.status(200).json({ data: resetUserPassword, message: 'email sent' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const token: string = req.body?.token.toString()
+            const password: string = req.body?.password?.toString()
+            const userLocale: string = req.cookies.Language || locale
+            const resetUserPassword: User = await this.authService.resetPassword(token, password, userLocale)
+
+            res.status(200).json({ data: resetUserPassword, message: 'password reset' })
         } catch (error) {
             next(error)
         }

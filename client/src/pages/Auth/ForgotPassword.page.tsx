@@ -1,9 +1,10 @@
+import { ForgotPasswordComponent } from '../../components/Auth'
+
 export default function ForgotPasswordPage() {
     return (
         <div className="container">
-            <h1 className="text-center" style={{ paddingTop: '30%' }}>
-                Forgot Password
-            </h1>
+            <h1 className="text-center">Forgot your password?</h1>
+            <ForgotPasswordComponent />
         </div>
     )
 }
