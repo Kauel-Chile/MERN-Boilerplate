@@ -84,7 +84,7 @@ const login = async (
     const isPasswordMatching: boolean = await bcrypt.compare(userData.password, authenticationMethod?.password)
     if (!isPasswordMatching) throw new HttpException(409, __({ phrase: 'Wrong password', locale }))
 
-    const token = createToken(findUser, 3600)
+    const token = createToken(findUser, 86400) /* 24 hrs */
     const cookie = createCookie(token)
 
     return { cookie, findUser, token }
