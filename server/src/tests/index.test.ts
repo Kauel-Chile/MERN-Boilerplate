@@ -1,6 +1,5 @@
 import request from 'supertest'
-import App from '@/app'
-import IndexRoute from '@routes/index.route'
+import { App } from '@/app'
 import { disconnect } from 'mongoose'
 
 afterAll(async () => {
@@ -11,7 +10,7 @@ afterAll(async () => {
 describe('Testing Index', () => {
     describe('[GET] /', () => {
         it('response statusCode 200', () => {
-            const app = new App(IndexRoute)
+            const app = new App()
 
             return request(app.getServer()).get(`/`).expect(200)
         })

@@ -7,6 +7,7 @@ This boilerplate was made as a template to a developer wanting to build an app u
 1. [What is MERN?](#what-is-mern)
 1. [Installation](#installation)
 1. [Usage](#usage)
+1. [Deployment](#deployment)
 1. [Testing](#testing)
 1. [Translation](#translation)
 1. [License](#license)
@@ -81,22 +82,31 @@ It will install the dependencies of ts-node to run the app.
 
 In the enviroment file in the server folder add the following parameters:
 
-````text
+```text
 FIRSTNAME="Super"
 LASTNAME="Admin"
 EMAIL="superAdmin@email.com"
 PASSWORD="Yourpassword1"
 ROLES=[]
-````
-
-## Publishing
-
-There are many ways to deploy a node.js server, so it will no be detailed in this guide. Nonetheless, before publishing it would be a good practice to build the frontend code with:
-
 ```
-cd ./client
-npm run build
+
+# Deployment
+
+It's highly suggested to use Docker to deploy the application. The application has a Dockerfile for the server and the client. To build the image, run the following commands from the project root:
+
+```bash
+docker build -t <image-name> .
 ```
+
+Where `<image-name>` is the name of the image you want to build. Notice the `.` at the end of the command, it is needed to build the image.
+
+To run the image, run the following command:
+
+```bash
+docker run -p 80:5000 -d --env-file <env-file> <image-name>
+```
+
+Where `<env-file>` is the path to the file with the environment variables, and `<image-name>` is the name of the image you just created. The `-p` flag is used to map the port of the container to the port of the host (port 80 on the web browser to an internal port 5000). The `-d` flag is used to run the container in "detached" mode, in other words, in the background.
 
 [Go up](#table-of-contents)
 

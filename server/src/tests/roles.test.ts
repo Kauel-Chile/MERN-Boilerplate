@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import request from 'supertest'
-import App from '@/app'
+import { App } from '@/app'
 import { LoginUserDto } from '@dtos/users.dto'
 import { CreateRoleDto, UpdateRoleDto } from '@/dtos/roles.dto'
 import roleModel from '@/models/roles.model'
 import organizationModel from '@/models/organizations.model'
 import { logger } from '@/utils/logger'
-import routes from '@routes/index'
 import userModel from '@/models/users.model'
 
 afterAll(async () => {
@@ -91,7 +90,7 @@ const concatRoles = [...roleTest, ...roleTest2]
 
 const AuthPath = '/'
 const RolesPath = '/api/roles'
-const app = new App(routes)
+const app = new App()
 
 describe('Testing Users with Login (SuperAdmin)', () => {
     beforeAll(async () => {

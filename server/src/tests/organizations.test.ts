@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import request from 'supertest'
-import App from '@/app'
+import { App } from '@/app'
 import { LoginUserDto } from '@dtos/users.dto'
 import { CreateOrgDto, UpdateOrgDto } from '@/dtos/organizations.dto'
 import organizationModel from '@/models/organizations.model'
 import { logger } from '@/utils/logger'
 import userModel from '@/models/users.model'
-import routes from '@routes/index'
 
 afterAll(async () => {
     await new Promise<void>(resolve => setTimeout(() => resolve(), 500))
@@ -90,7 +89,7 @@ const roleTest2 = [
 const concatRoles = [...roleTest, ...roleTest2]
 const AuthPath = '/'
 const OrgPath = '/api/organizations'
-const app = new App(routes)
+const app = new App()
 
 describe('Testing Users with Login (SuperAdmin)', () => {
     beforeAll(async () => {
